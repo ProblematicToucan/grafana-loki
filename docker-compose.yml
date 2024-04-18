@@ -4,8 +4,8 @@ volumes:
   grafana_data:
     name: grafana_data
     driver: local
-  promtail_data:
-    name: promtail_data
+  loki_data:
+    name: loki_data
     driver: local
 
 networks:
@@ -17,20 +17,11 @@ services:
     container_name: loki
     image: grafana/loki:latest
     ports:
-      - "3100:3100"
+      - 3100:3100
     volumes:
+      - loki_data:/loki:rw
       - ./config/loki/loki-config.yml:/etc/loki/config.yml
     command: -config.file=/etc/loki/config.yml
-    networks:
-      - monitoring
-
-  promtail:
-    container_name: promtail
-    image: grafana/promtail:latest
-    volumes:
-      - C:/Users/Adminskuy/Documents/code/node/hello-world/logs:/var/log
-      - ./config/promtail/promtail-config.yml:/etc/promtail/config.yml
-    command: -config.file=/etc/promtail/config.yml
     networks:
       - monitoring
 
@@ -61,6 +52,6 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
     ports:
-      - "3000:3000"
+      - 3000:3000
     networks:
       - monitoring
